@@ -24,13 +24,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
       });
 
 
+        // to initiate the game 
+        playButton.addEventListener('click', playGame)
 
     // for the movement of the bird in the play
     function playGame(){
         birdBottom-=gravity; // this shows at what rate the bird descends
         bird.style.bottom = birdBottom+'px'; // move vertically 
         //move horizontally
-        bird.style.left = birdLeft+'px' // adding 220 px to the left everytime at the start 
+        bird.style.left = birdLeft+'px' // adding 220 px to the left everytime at the start
         score = 0; // Initialize the score
         updateScore(); // Update the score display
     }
@@ -39,8 +41,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     let gameTimer= setInterval(playGame, 100);
 
 
-    // to initiate the game 
-    playButton.addEventListener('click', playGame)
+  
 
     function keyControl(e){ // only for spacebar 
         if(e.keyCode===32){
@@ -114,9 +115,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
                updateBestScoreDisplay();
             }
            
-         
-            
-        
             if (obstacleLeft=== -50) // since width is 60
             {
                 clearInterval(timer);
