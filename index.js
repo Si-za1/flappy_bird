@@ -1,41 +1,55 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const bird = document.querySelector(".bird");
 	const gameScreen = document.querySelector(".game-container");
-	const ground = document.querySelector(".ground");
 	const loadingScreen = document.getElementById("loadingScreen");
 	const playButton = document.getElementById("playButton");
 	const scoreElement = document.getElementById("score");
 	const bestScoreElement = document.getElementById("bestScore");
 
+
+  const gameOverScreen = document.getElementById("gameOverScreen");
+  const finalScoreElement = document.getElementById("finalScore");
+
+  const gameAudio = document.getElementById("gameAudio");
+
+
 	let birdLeft = 220;
 	let birdBottom = 150;
+
 	let gravity = 2;
 	let isGameOver = false;
 	let gap = 430;
 	let totalScore = 0;
 	let bestScore = localStorage.getItem("bestScore") || 0; // for comparing the bestscore
+	let velocityY = 0;
 
 	// for the movement of the bird in the play
 	function playGame() {
-		pipeAsObstacle();
-		birdBottom -= gravity; // this shows at what rate the bird descends
+		if (isGameOver) return;
+		// pipeAsObstacle();
+		velocityY += gravity;
+		birdBottom -= velocityY;
+		// this shows at what rate the bird descends
 		bird.style.bottom = birdBottom + "px"; // move vertically
 		//move horizontally
 		bird.style.left = birdLeft + "px"; // adding 220 px to the left everytime at the start
 		score = 0; // Initialize the score
 		updateScore(); // Update the score display
+    gameAudio.play()// audio 
 	}
 
 	// loading screen
-
 	playButton.addEventListener("click", () => {
 		loadingScreen.style.display = "none"; // Hide the loading screen
 		gameScreen.style.display = "block"; // Show the game screen
 		playGame();
+    pipeAsObstacle();
+		setInterval(playGame, 100);
 	});
 
-	// to make the bird move
-	// let gameTimer= setInterval(playGame, 100);
+  function restartGame() {
+    location.reload();
+  }
 
 	function keyControl(e) {
 		// only for spacebar
@@ -48,13 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		// now to make it up, need to add certain px to move it up
 		if (birdBottom < 500) {
 			birdBottom += 30;
+			console.log(birdBottom);
+			console.log("up");
+			velocityY = -8;
+			bird.style.bottom = birdBottom + "px";
 			//if only birdbottom is less than only the 30px is added
 		}
-
-		bird.style.bottom = birdBottom + "px";
 	}
 
-	document.addEventListener("keyup", keyControl);
+	document.addEventListener("keydown", keyControl);
+
 	// only when moves up when pressed keybar
 
 	//scoring system
@@ -72,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	function pipeAsObstacle() {
 		let obstacleLeft = 500;
 		// to generate random height pipe
-		let randomHeight = Math.random() * 60;
+		let randomHeight = Math.random() * 30;
 		let obstacleBottom = randomHeight;
 
 		const obstacle = document.createElement("div");
@@ -130,14 +147,20 @@ document.addEventListener("DOMContentLoaded", () => {
 				clearInterval(timer);
 			}
 		}
-		let timer = setInterval(moveObstacle, 20);
-		if (!isGameOver) setTimeout(pipeAsObstacle, 3000); // generating obstacle every 3 milisecs
+		let timer = setInterval(moveObstacle, 10);
+		if (!isGameOver) setTimeout(pipeAsObstacle, 2500); // generating obstacle every 3 milisecs
+    restartButton.addEventListener("click", restartGame);
 	}
 
+
 	function gameOver() {
-		// clearInterval(gameTimer);
+		//clearInterval(gameTimer);
 		isGameOver = true;
 		console.log("gameOver");
 		document.removeEventListener("keyup", keyControl);
+    gameAudio.pause(); // Pause the audio when the game is over
+    gameAudio.currentTime = 0;
+    gameOverScreen.style.display = "block";
+    finalScoreElement.textContent = "Final Score: " + totalScore;
 	}
 });
