@@ -158,9 +158,17 @@ document.addEventListener("DOMContentLoaded", () => {
 		isGameOver = true;
 		console.log("gameOver");
 		document.removeEventListener("keyup", keyControl);
+    
     gameAudio.pause(); // Pause the audio when the game is over
     gameAudio.currentTime = 0;
+
+    //rotating the bird when it collides 
+    bird.style.transform = "rotate(90deg)";
+    bird.style.transition = "transform 0.5s linear";
+    bird.style.bottom = "0";
+
     gameOverScreen.style.display = "block";
     finalScoreElement.textContent = "Final Score: " + totalScore;
+
 	}
 });
